@@ -5,8 +5,10 @@ import pygame as pg
 from pygame.sprite import AbstractGroup
 
 
-WIDTH = 1000  #1800 ゲームウィンドウの幅
-HEIGHT = 500  #900 ゲームウィンドウの高さ
+WIDTH = 1800  #1800 ゲームウィンドウの幅
+HEIGHT = 900  #900 ゲームウィンドウの高さ
+earth = HEIGHT*3//4 #地面の高さ
+square = 55 #ブロックの大きさ
 
 class Stage:
     """
@@ -17,20 +19,22 @@ class Stage:
         ブロックの大きさ変更
         引数x,yはブロックの初期位置を表す
         """
-        self.image=pg.transform.rotozoom(pg.image.load("ex05/brock.jpg"),0,0.1)
+        self.image=pg.transform.rotozoom(pg.image.load("ex05/brock.jpg"),0,0.08)
         self.rect=self.image.get_rect()
-        self.rect.topleft=(x,y)
-        self.speed=2
+        self.rect.topleft=(square*x,earth+square*y)
+        self.speed=5
 
         #ブロックの画像の大きさの確認用
-        self.image_width, self.image_height = self.image.get_size()
-        print(f"画像の幅: {self.image_width}, 画像の高さ: {self.image_height}")
+        # self.image_width, self.image_height = self.image.get_size()
+        # print(f"画像の幅: {self.image_width}, 画像の高さ: {self.image_height}")
 
     
     def update(self):
         self.rect.x-=self.speed
-        if self.rect.right<=0:
-            self.rect.x=WIDTH
+
+    def OffScreen(self):
+        return self.rect.right<=0
+            
 
     def draw(self,screen):
         screen.blit(self.image,self.rect.topleft)
@@ -51,11 +55,66 @@ def main():
     pg.init()
     screen=pg.display.set_mode((WIDTH,HEIGHT))
     x=WIDTH
-    y=HEIGHT*3//4
+    y=earth
     #ブロックの初期位置
     positions=[
-        (0,HEIGHT*3//4),
-        (70,HEIGHT*3//4)
+        #地面1番目
+        (0,0),(1,0),(2,0),(3,0),(4,0),(5,0),
+        (6,0),(7,0),(8,0),(9,0),(10,0),(11,0),
+        (12,0),(13,0),(14,0),(15,0),(16,0),(17,0),
+        (18,0),(19,0),(20,0),(21,0),(22,0),(23,0),
+        (24,0),(25,0),(26,0),(27,0),(28,0),(29,0),
+        (30,0),(31,0),(32,0),(33,0),(34,0),(35,0),
+        (36,0),(37,0),(38,0),(39,0),(40,0),(41,0),
+        (42,0),(43,0),(44,0),(45,0),(46,0),(47,0),
+        #(48,0),(49,0),(50,0),
+        (51,0),(52,0),(53,0),
+        (54,0),(55,0),(56,0),(57,0),(58,0),(59,0),
+        (60,0),(61,0),(62,0),(63,0),(64,0),(65,0),
+        (66,0),(67,0),(68,0),(69,0),(70,0),(71,0),
+
+
+        #地面2番目
+        (0,+1),(1,+1),(2,+1),(3,+1),(4,+1),(5,+1),
+        (6,+1),(7,+1),(8,+1),(9,+1),(10,+1),(11,+1),
+        (12,+1),(13,+1),(14,+1),(15,+1),(16,+1),(17,+1),
+        (18,+1),(19,+1),(20,+1),(21,+1),(22,+1),(23,+1),
+        (24,+1),(25,+1),(26,+1),(27,+1),(28,+1),(29,+1),
+        (30,+1),(31,+1),(32,+1),(33,+1),(34,+1),(35,+1),
+        (36,+1),(37,+1),(38,+1),(39,+1),(40,+1),(41,+1),
+        (42,+1),(43,+1),(44,+1),(45,+1),(46,+1),(47,+1),
+        #(48,+1),(49,+1),(50,+1),
+        (51,+1),(52,+1),(53,+1),
+        (54,+1),(55,+1),(56,+1),(57,+1),(58,+1),(59,+1),
+        (60,+1),(61,+1),(62,+1),(63,+1),(64,+1),(65,+1),
+        (66,+1),(67,+1),(68,+1),(69,+1),(70,+1),(71,+1),
+
+
+        #地面3番目
+        (0,+2),(1,+2),(2,+2),(3,+2),(4,+2),(5,+2),
+        (6,+2),(7,+2),(8,+2),(9,+2),(10,+2),(11,+2),
+        (12,+2),(13,+2),(14,+2),(15,+2),(16,+2),(17,+2),
+        (18,+2),(19,+2),(20,+2),(21,+2),(22,+2),(23,+2),
+        (24,+2),(25,+2),(26,+2),(27,+2),(28,+2),(29,+2),
+        (30,+2),(31,+2),(32,+2),(33,+2),(34,+2),(35,+2),
+        (36,+2),(37,+2),(38,+2),(39,+2),(40,+2),(41,+2),
+        (42,+2),(43,+2),(44,+2),(45,+2),(46,+2),(47,+2),
+        #(48,+2),(49,+2),(50,+2),
+        (51,+2),(52,+2),(53,+2),
+        (54,+2),(55,+2),(56,+2),(57,+2),(58,+2),(59,+2),
+        (60,+2),(61,+2),(62,+2),(63,+2),(64,+2),(65,+2),
+        (66,+2),(67,+2),(68,+2),(69,+2),(70,+2),(71,+2),
+
+
+        #その他
+        #始めに浮いてるやつ
+        (20,-4),(21,-4),(22,-4),
+        #ピラミッド？
+        (30,-1),(31,-1),(31,-2),(32,-1),(32,-2),(32,-3),
+        (34,-1),(34,-2),(34,-3),(35,-1),(35,-2),(36,-1),
+        #上ってく空中ブロック
+        (38,-5),(39,-5),(42,-6),(43,-6),
+        (49,-6),(50,-6)
     ]
     
     scrollers=[]
@@ -64,13 +123,22 @@ def main():
         scroller=Stage(x,y)
         scrollers.append(scroller)
 
-    # while True:
-    for i in range(1000):
-        pg.display.update()
-        scroller.update()
-        screen.fill((0,0,255))
+    while True:
+    # for i in range(1000):
+        for event in pg.event.get():
+            if event.type==pg.KEYDOWN and event.key==pg.K_SPACE:
+                return
 
-        scroller.draw(screen)
+        pg.display.update()
+        for scroller in scrollers:
+            scroller.update()
+
+        #画面外の時オブジェクト削除
+        scrollers=[scroller for scroller in scrollers if not scroller.OffScreen()]
+
+        screen.fill((0,0,255))#背景仮
+        for scroller in scrollers:
+            scroller.draw(screen)
 
         pg.display.flip()
         clock.tick(60)
