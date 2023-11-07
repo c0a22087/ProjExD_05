@@ -20,7 +20,7 @@ class Stage:
         ブロックの大きさ変更
         引数x,yはブロックの初期位置を表す
         """
-        self.image=pg.transform.rotozoom(pg.image.load("ex05/brock.jpg"),0,0.08)
+        self.image=pg.transform.rotozoom(pg.image.load("ex05/brock1.jpg"),0,0.08)
         self.rect=self.image.get_rect()
         self.rect.topleft=(square*x,earth+square*y)
         self.speed=speed
