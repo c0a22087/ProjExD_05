@@ -30,17 +30,17 @@ class mario():
         self.mro = pg.transform.rotozoom(self.mro, 0, 0.4)
         # self.mro1 = pg.image.load("ex05/fig/mario_6.png") #歩くマリオ画像
         # self.mro1_1 = pg.transform.rotozoom(self.mro1, 10, 1.0) #回転した歩くマリオ画像
-        # self.mro1_2 = pg.transform.flip(self.mro1, True, False) #左右反転
+        self.mro1_2 = pg.transform.flip(self.mro, True, False) #左右反転
         # self.mro2 = pg.image.load("ex05/fig/mario_3.png") #ジャンプするマリオ画像
         self.mro_rct = self.mro.get_rect()
         # self.mro1_rct = self.mro1.get_rect()
         # self.mro1_1_rct = self.mro1_1.get_rect()
-        # self.mro1_2_rct = self.mro1_2.get_rect()
+        self.mro1_2_rct = self.mro1_2.get_rect()
         # self.mro2_rct = self.mro2.get_rect()
         self.mro_rct.center =[400, earth]
         # self.mro1_rct.center =[100, earth]
         # self.mro1_1_rct.center =[100, earth]
-        # self.mro1_2_rct.center =[100, earth]
+        self.mro1_2_rct.center =[100, earth]
         # self.mro2_rct.center =[100, earth]
         # key_lst = pg.key.get_pressed()
 
