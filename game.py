@@ -214,6 +214,7 @@ def main():
         scroller=Stage(x,y,speed)
         scrollers.append(scroller)
 
+
     start_time=pg.time.get_ticks()
 
     while True:
@@ -223,7 +224,7 @@ def main():
                 return
         
         now_time=pg.time.get_ticks()
-        #
+        
         # print(now_time) #時間確認用
         if now_time-start_time>=95000:
             for scroller in scrollers:
@@ -235,6 +236,7 @@ def main():
 
         #画面外の時オブジェクト削除
         scrollers=[scroller for scroller in scrollers if not scroller.OffScreen()]
+
 
         screen.fill((0,0,255))#背景仮
         for scroller in scrollers:
