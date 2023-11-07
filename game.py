@@ -5,6 +5,7 @@ import pygame as pg
 from pygame.sprite import AbstractGroup
 
 
+
 WIDTH = 1800  #1800 ゲームウィンドウの幅
 HEIGHT = 900  #900 ゲームウィンドウの高さ
 earth = HEIGHT*3//4 #地面の高さ
