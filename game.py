@@ -13,7 +13,7 @@ class mario():
     ゲームキャラクター（マリオ）に関するクラス
     """
     key_ls= {  # 押下キーと移動量の辞書
-        pg.K_j: (0, -4),
+        pg.K_j: (0, -6), #
         pg.K_LEFT: (-1, 0),
         pg.K_RIGHT: (+1, 0),
         }
@@ -26,7 +26,7 @@ class mario():
         """
 
         #super().__init__()
-        self.mro = pg.image.load("ex05/fig/mario_4.png") #デフォルトのマリオ画像
+        self.mro = pg.image.load("ex05/fig/mario_4_1.png") #デフォルトのマリオ画像
         self.mro = pg.transform.rotozoom(self.mro, 0, 0.4)
         # self.mro1 = pg.image.load("ex05/fig/mario_6.png") #歩くマリオ画像
         # self.mro1_1 = pg.transform.rotozoom(self.mro1, 10, 1.0) #回転した歩くマリオ画像
@@ -86,7 +86,7 @@ def main():
     mo = mario()
     clock = pg.time.Clock()
     key_ls= {  # 押下キーと移動量の辞書
-        pg.K_j: (0, -4),
+        pg.K_j: (0, -6), #
         pg.K_LEFT: (-1, 0),
         pg.K_RIGHT: (+1, 0),
         }
@@ -97,7 +97,7 @@ def main():
 
         screen.blit(mo.mro,(0,0))
         key_lst = pg.key.get_pressed()
-        mro_mv = [0,0]
+        mro_mv = [0,1] #
         for key, mv in key_ls.items():
             if key_lst[key]:
                 mro_mv[0] += mv[0]
