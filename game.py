@@ -9,11 +9,15 @@ HEIGHT = 900  # ゲームウィンドウの高さ
 #　ゴール機能
 class Goal_m(pg.sprite.Sprite):
 
+    """
+    ゴールに関するクラス
+    """
+
     def __init__(self):
                 
         # ゴールを表示
             # screen = pg.display.set_mode((800, 900)) #画面の大きさ
-            goal_img = pg.image.load("ex05/goal.jpeg")
+            goal_img = pg.image.load("ex05/goal.png")
             goal2_img = pg.image.load("ex05/goal_txt.jpeg")
             self.goal_img = pg.transform.scale(goal_img, (250, 500)) #画像の大きさ
             # enn = pg.Surface((20, 20))
@@ -23,8 +27,6 @@ class Goal_m(pg.sprite.Sprite):
 
         #キャラがゴールする
         
-            
-
 
 
 def main():
