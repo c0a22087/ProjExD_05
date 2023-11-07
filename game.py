@@ -24,7 +24,7 @@ class Tekimod:
         self.bomu_img=pg.transform.rotozoom(self.bomu_img,0,2)
         self.bomu_rct=self.bomu_img.get_rect()
         self.bomu_rct.center=[800,0]
-        self.bomu_x=0
+        self.bomu_x=-1
         self.bomu_y=+3
 
         #クリボー
@@ -33,7 +33,7 @@ class Tekimod:
         self.kuribo_rct=self.kuribo_img.get_rect()
         self.kuribo_rct.center=[1500,600]
         self.kuribo_x=-1
-        self.kuribo_y=0
+        self.kuribo_y=1
 
         #パックン
         self.pakkun_img=pg.image.load("ex05/fig/pakkun1.1.png")
