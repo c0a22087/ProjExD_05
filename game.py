@@ -11,6 +11,9 @@ HEIGHT = 900  #900 ゲームウィンドウの高さ
 earth = HEIGHT*3//4 #地面の高さ
 square = 55 #ブロックの大きさ
 
+"""
+HEAD
+"""
 class Stage:
     """
     ステージ作成を行う
@@ -23,7 +26,7 @@ class Stage:
         self.image=pg.transform.rotozoom(pg.image.load("ex05/brock1.jpg"),0,0.08)
         self.rect=self.image.get_rect()
         self.rect.topleft=(square*x,earth+square*y)
-        self.speed=speed
+        self.speed=1
 
         #ブロックの画像の大きさの確認用
         # self.image_width, self.image_height = self.image.get_size()
@@ -41,13 +44,73 @@ class Stage:
         screen.blit(self.image,self.rect.topleft)
         
 
+class Tekimod:
+    
+    def __init__(self):
+        #キラーの初期設定
+        
+        self.kira_img=pg.image.load("ex05/fig/kira1.1.png")
+        self.kira_img=pg.transform.rotozoom(self.kira_img,0,0.2)
+        self.kira_rct=self.kira_img.get_rect()
+        self.kira_rct.center=[1600,400]
+        self.kira_x=-5
+        self.kira_y=0
+        #ボム兵  self.image = tools.load_image("data", "rabipple.png", -1)
 
+        self.bomu_img=pg.image.load("ex05/fig/bomu1.1.png")
+        self.bomu_img=pg.transform.rotozoom(self.bomu_img,0,2)
+        self.bomu_rct=self.bomu_img.get_rect()
+        self.bomu_rct.center=[WIDTH,HEIGHT//2]
+        self.bomu_x=-1
+        self.bomu_y=+5
+
+        #クリボー
+        self.kuribo_img=pg.image.load("ex05/fig/kuribo1.1.png")
+        self.kuribo_img=pg.transform.rotozoom(self.kuribo_img,0,2)
+        self.kuribo_rct=self.kuribo_img.get_rect()
+        self.kuribo_rct.center=[1500,600]
+        self.kuribo_x=-3
+        self.kuribo_y=1
+
+        #パックン
+        self.pakkun_img=pg.image.load("ex05/fig/pakkun1.1.png")
+        self.pakkun_img=pg.transform.rotozoom(self.pakkun_img,0,2)
+        self.pakkun_rct=self.pakkun_img.get_rect()
+        self.pakkun_rct.center=[33*square+25,earth-square+20]
+        self.pakkun_x=-1
+
+
+    def update(self, screen: pg.Surface):
+        #キラー
+        self.kira_rct.move_ip(self.kira_x,self.kira_y)
+        screen.blit(self.kira_img,self.kira_rct)
+        #ボムー
+        self.bomu_rct.move_ip(self.bomu_x,self.bomu_y)
+        screen.blit(self.bomu_img,self.bomu_rct)
+        #クリボー
+        self.kuribo_rct.move_ip(self.kuribo_x,self.kuribo_y)
+        screen.blit(self.kuribo_img,self.kuribo_rct)
+        #パックン
+        self.pakkun_rct.move_ip(self.pakkun_x,0)
+        screen.blit(self.pakkun_img,self.pakkun_rct)
+"""
+敵mob
+"""
+def check_collision(mob,stage):
+    hanntei=0
+    if mob.colliderect(stage):
+        if mob.bottom>=stage.top and mob.top<=stage.bottom:
+            hanntei=1
+        if mob.left>=stage.right and mob.right>=stage.left:
+            hanntei=2
+    return hanntei
 
 
 def main():
     pg.display.set_caption("タイトル")
-    screen = pg.display.set_mode((WIDTH,HEIGHT))
 
+    screen = pg.display.set_mode((WIDTH,HEIGHT))
+    teki=Tekimod()
     """
     良輔
     """
@@ -131,7 +194,28 @@ def main():
         (121,+2),(122,+2),(123,+2),(124,+2),(125,+2),(126,+2),
         (127,+2),(128,+2),(129,+2),(130,+2),(131,+2),(132,+2),
 
+        #地面
+        (0,+3),(1,+3),(2,+3),(3,+3),(4,+3),(5,+3),
+        (6,+3),(7,+3),(8,+3),(9,+3),(10,+3),(11,+3),
+        (12,+3),(13,+3),(14,+3),(15,+3),(16,+3),(17,+3),
+        (18,+3),(19,+3),(20,+3),(21,+3),(22,+3),(23,+3),
+        (24,+3),(25,+3),(26,+3),(27,+3),(28,+3),(29,+3),
+        (30,+3),(31,+3),(32,+3),(33,+3),(34,+3),(35,+3),
+        (36,+3),(37,+3),(38,+3),(39,+3),(40,+3),(41,+3),
+        (42,+3),(43,+3),(44,+3),(45,+3),(46,+3),(47,+3),
+        #(48,+3),(49,+3),(50,+3),(51,+3),(52,+3),(53,+3),
+        (54,+3),(55,+3),(56,+3),(57,+3),(58,+3),(59,+3),
+        (60,+3),(61,+3),(62,+3),(63,+3),(64,+3),(65,+3),
+        (66,+3),(67,+3),(68,+3),(69,+3),(70,+3),(71,+3),
+        (72,+3),(73,+3),(74,+3),(75,+3),(76,+3),(77,+3),
+        (78,+3),(79,+3),(80,+3),(81,+3),(82,+3),(83,+3),
 
+        (97,+3),(98,+3),(99,+3),(100,+3),(101,+3),(102,+3),
+        (103,+3),(104,+3),(105,+3),(106,+3),(107,+3),(108,+3),
+        (109,+3),(110,+3),(111,+3),(112,+3),(113,+3),(114,+3),
+        (115,+3),(116,+3),(117,+3),(118,+3),(119,+3),(120,+3),
+        (121,+3),(122,+3),(123,+3),(124,+3),(125,+3),(126,+3),
+        (127,+3),(128,+3),(129,+3),(130,+3),(131,+3),(132,+3),
         #その他
         
                                 (20,-4),
@@ -208,7 +292,7 @@ def main():
         (110,-1),(110,-2),(110,-3),(110,-4),(110,-5),(110,-6),(110,-7),(110,-8)
     ]
 
-    speed=1
+    speed=0
     scrollers=[]
     for i in range(len(positions)):
         x,y=positions[i]
@@ -223,7 +307,7 @@ def main():
         for event in pg.event.get():
             if event.type==pg.KEYDOWN and event.key==pg.K_SPACE:
                 return
-        
+
         now_time=pg.time.get_ticks()
         
         # print(now_time) #時間確認用
@@ -238,19 +322,60 @@ def main():
         #画面外の時オブジェクト削除
         scrollers=[scroller for scroller in scrollers if not scroller.OffScreen()]
 
+        teki.bomu_y=+5
+        teki.kuribo_y=+5
+        for i in range(len(scrollers)):
+            if check_collision(teki.bomu_rct,scrollers[i].rect)==1:
+                teki.bomu_y=0
+                teki.bomu_x=-2
+            if check_collision(teki.kuribo_rct,scrollers[i].rect)==1:
+                teki.kuribo_y=0
+                teki.kuribo_x=-2
+            # if check_collision(teki.bomu_rct,scrollers[i].rect)==2:
+            #     teki.bomu_x*=-1
+            #     teki.bomu_y=teki.bomu_y
+            # if check_collision(teki.kuribo_rct,scrollers[i].rect)==2:
+            #     teki.kuribo_x*=-1
+            #     teki.kuribo_y=teki.kuribo_y
 
+        #teki=Tekimod()
         screen.fill((0,0,255))#背景仮
         for scroller in scrollers:
             scroller.draw(screen)
-
+        teki.update(screen)#敵mobを追加
         pg.display.flip()
         clock.tick(60)
         # clock.tick(1000)
 
+
+    # 敵mob
+
+    # tmr=0
+    # clock=pg.time.Clock()
+
+    # back = pg.image.load("ex05/fig/pg_bg.jpg")
+   
+        # for event in pg.event.get():
+        #     if event.type == pg.QUIT: 
+        #         return
+       
+        
+        #teki.update(screen)#敵mobを追加
+        
+        
+    
+        
+        pg.display.update()
+       
 if __name__ == "__main__":
     pg.init()
     main()
     pg.quit()
     sys.exit()
-    
+
+
+#mobの背景をなくす
+#画面外に出たら消す
+#複数mobが生成されるようにする。
+#がんばった
 
