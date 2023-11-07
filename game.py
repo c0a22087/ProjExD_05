@@ -18,7 +18,7 @@ class Goal_m(pg.sprite.Sprite):
         # ゴールを表示
             # screen = pg.display.set_mode((800, 900)) #画面の大きさ
             goal_img = pg.image.load("ex05/goal.png")
-            goal2_img = pg.image.load("ex05/goal_txt.jpeg")
+            goal2_img = pg.image.load("ex05/goal_txt.jpeg") #時間があったら
             self.goal_img = pg.transform.scale(goal_img, (250, 500)) #画像の大きさ
             # enn = pg.Surface((20, 20))
 
