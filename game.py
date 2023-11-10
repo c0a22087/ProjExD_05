@@ -1,6 +1,8 @@
 import sys
 import time
 import pygame as pg
+import pygame
+from pygame.sprite import AbstractGroup
 
 
 WIDTH = 1800  #1800 ゲームウィンドウの幅
@@ -439,6 +441,9 @@ def main():
 
     start_time=pg.time.get_ticks()
 
+    pygame.mixer.music.load("ex05/mario.mp3") 
+    pygame.mixer.music.play()
+
     while True:
     # for i in range(1000):
         for event in pg.event.get():
@@ -486,6 +491,8 @@ def main():
                 ma.on_right=True
             if len(check_collision(ma.mro_rct,goal.goal_rct))>=1:
                 print("goal")
+                pygame.mixer.music.load("ex05/Goal.mp3") 
+                pygame.mixer.music.play()
                 return
 
         key_lst = pg.key.get_pressed()
