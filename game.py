@@ -113,6 +113,18 @@ class Goal_m(pg.sprite.Sprite):
     """
     ゴールに関するクラス
     """
+    def __init__(self):
+                
+        # ゴールを表示
+            # screen = pg.display.set_mode((800, 900)) #画面の大きさ
+            goal_img = pg.image.load("ex05/goal.png")
+            goal2_img = pg.image.load("ex05/goal_txt.jpeg") #時間があったら
+            self.goal_img = pg.transform.scale(goal_img, (250, 500)) #画像の大きさ
+            self.goal_rct = self.goal_img.get_rect
+            # enn = pg.Surface((20, 20))
+
+    def update(self,screen):        #キャラがゴールする
+            screen.blit(self.goal_img, [WIDTH*3//4, earth-square*8-20])
 
 
         # key_lst= {  # 押下キーと移動量の辞書
@@ -217,19 +229,6 @@ def check_collision(mob,stage):
         #super().__init__()
     
 
-    def __init__(self):
-                
-        # ゴールを表示
-            # screen = pg.display.set_mode((800, 900)) #画面の大きさ
-            goal_img = pg.image.load("ex05/goal.png")
-            goal2_img = pg.image.load("ex05/goal_txt.jpeg") #時間があったら
-            self.goal_img = pg.transform.scale(goal_img, (250, 500)) #画像の大きさ
-            # enn = pg.Surface((20, 20))
-
-    def update(self,screen):
-            screen.blit(self.goal_img, [500, 100])
-
-        #キャラがゴールする
         
 
 
@@ -245,37 +244,9 @@ def main():
     clock = pg.time.Clock()
 
     screen = pg.display.set_mode((800,600))
-    back = pg.image.load("ex05/haikei.png")
     clock = pg.time.Clock() #時間を表す
     goal = None
-    tmr = 0 
-    while True:
-        key_lst = pg.key.get_pressed()
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                return 0
-        screen.blit(back,[0,0])
-    
-
-        tmr += 1
-        if tmr == 60:
-            goal = Goal_m()
-
-        if goal is not None:
-            goal.update(screen)
-        clock.tick(60) #時間を更新 
-        pg.display.update()
-
-
         
-
-        # mrio.update(screen)
-        # mo.update(screen)
-        # pg.display.update()
-        # screen.blit(back,[0,0])
-        # clock.tick(50)
-
-    # screen = pg.display.set_mode((WIDTH,HEIGHT))
 
     """
     良輔
@@ -482,6 +453,7 @@ def main():
         if now_time-start_time>=95000:
             for scroller in scrollers:
                 scroller.speed=0
+            goal = Goal_m() 
         
 
         for scroller in scrollers:
@@ -512,6 +484,9 @@ def main():
                 ma.on_left=True
             if 4 in check_collision(ma.mro_rct,scrollers[i].rect):
                 ma.on_right=True
+            if len(check_collision(ma.mro_rct,goal.goal_rct))>=1:
+                print("goal")
+                return
 
         key_lst = pg.key.get_pressed()
         for key, mv in ma.key_ls.items():
@@ -526,6 +501,27 @@ def main():
             #     teki.kuribo_y=teki.kuribo_y
 
         #teki=Tekimod()
+        key_lst = pg.key.get_pressed()
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                return 0
+    
+
+
+
+        if goal is not None:
+            goal.update(screen)
+
+
+        
+
+        # mrio.update(screen)
+        # mo.update(screen)
+        # pg.display.update()
+        # screen.blit(back,[0,0])
+        # clock.tick(50)
+
+    # screen = pg.display.set_mode((WIDTH,HEIGHT))
         ma.move(speed)
 
         for scroller in scrollers:
@@ -533,6 +529,7 @@ def main():
         
         ma.update(screen)
         teki.update(screen)#敵mobを追加
+        pg.display.update()
         pg.display.flip()
         clock.tick(60)
         # clock.tick(1000)
