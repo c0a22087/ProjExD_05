@@ -1,18 +1,52 @@
 #import random
 import sys
-from typing import Any
-import time
 import pygame as pg
-from pygame.sprite import AbstractGroup
+
+WIDTH = 1800  #1800 ゲームウィンドウの幅
+HEIGHT = 900  #900 ゲームウィンドウの高さ
+earth = HEIGHT*3//4 #地面の高さ
+square = 55 #ブロックの大きさ
+
+
+class Stage:
+    """
+    ステージ作成を行う
+    """
+    def __init__(self,x,y,speed):
+        """
+        ブロックの大きさ変更
+        引数x,yはブロックの初期位置を表す
+        """
+        self.image=pg.transform.rotozoom(pg.image.load("ex05/brock1.jpg"),0,0.08)
+        self.rect=self.image.get_rect()
+        self.rect.topleft=(square*x,earth+square*y)
+        self.speed=speed
+
+        # # ブロックの画像の大きさの確認用
+        # self.image_width, self.image_height = self.image.get_size()
+        # print(f"画像の幅: {self.image_width}, 画像の高さ: {self.image_height}")
+
+    
+    def update(self):
+        self.rect.x-=self.speed
+
+    def OffScreen(self):
+        return self.rect.right<=0
+    
+    def get_top(self):
+        return self.rect.top
+            
+
+    def draw(self,screen):
+        screen.blit(self.image,self.rect.topleft)
 
 class mario():
     """
     ゲームキャラクター（マリオ）に関するクラス
     """
     key_ls= {  # 押下キーと移動量の辞書
-        pg.K_j: (0, -6), #
-        pg.K_LEFT: (-1, 0),
-        pg.K_RIGHT: (+1, 0),
+        pg.K_LEFT: (-7, 0),
+        pg.K_RIGHT: (+7, 0),
         }
 
     def __init__(self):
@@ -21,39 +55,70 @@ class mario():
         引数1 mro：マリオ画像ファイル名の番号
         引数2 xy：マリオ画像の位置座標タプル
         """
-        self.mro = pg.image.load("ex05/fig/mario_4_1.png") #デフォルトのマリオ画像
-        self.mro = pg.transform.rotozoom(self.mro, 0, 0.4)
-        # self.mro1 = pg.image.load("ex05/fig/mario_6.png") #歩くマリオ画像
-        # self.mro1_1 = pg.transform.rotozoom(self.mro1, 10, 1.0) #回転した歩くマリオ画像
-        self.mro1_2 = pg.transform.flip(self.mro, True, False) #左右反転
-        # self.mro2 = pg.image.load("ex05/fig/mario_3.png") #ジャンプするマリオ画像
+        self.mro = pg.image.load("ex05/fig/mario_4.png") #デフォルトのマリオ画像
+        self.mro = pg.transform.rotozoom(self.mro, 0, 0.2)
+        # self.mro1_2 = pg.transform.flip(self.mro, True, False) #左右反転
+        # self.mro1_2_rct = self.mro1_2.get_rect()
+        # self.mro1_2_rct.center =[100, earth]
+        self.whidth,self.height=self.mro.get_size()
+        self.gravity=2
+        self.x=10*square
+        self.y=earth-square*5
+        self.velocity=0
+        self.velocity_x=0
+        self.jump_strength=-36
+        self.on_ground=False
+        self.on_head=False
+        self.on_right=False
+        self.on_left=False
         self.mro_rct = self.mro.get_rect()
-        # self.mro1_rct = self.mro1.get_rect()
-        # self.mro1_1_rct = self.mro1_1.get_rect()
-        self.mro1_2_rct = self.mro1_2.get_rect()
-        # self.mro2_rct = self.mro2.get_rect()
-        self.mro_rct.center =[400, earth]
-        # self.mro1_rct.center =[100, earth]
-        # self.mro1_1_rct.center =[100, earth]
-        self.mro1_2_rct.center =[100, earth]
-        # self.mro2_rct.center =[100, earth]
-        # key_lst = pg.key.get_pressed()
+
+
+    def move(self,speed):
+        keys=pg.key.get_pressed()
+        if self.on_ground==True:
+            self.velocity=(-(self.gravity+3))
+            if keys[pg.K_j]:
+                self.velocity=self.jump_strength
+        
+        if self.on_head==True:
+            self.velocity=5
+        
+        if self.on_left==True:
+            if keys[pg.K_LEFT]:
+                self.velocity_x=(self.key_ls[pg.K_LEFT][0])*-1
+        if self.on_right==True:
+            if keys[pg.K_RIGHT]:
+                self.velocity_x=(self.key_ls[pg.K_RIGHT][0])*-1
+
+        self.velocity+=self.gravity
+        self.y+=self.velocity
+        self.velocity_x-=speed
+        self.x+=self.velocity_x
+        self.mro_rct.x=self.x
+        self.mro_rct.y=self.y
+        self.velocity_x=0
+
 
     def update(self, screen: pg.Surface):
         """
         マリオの操作
         """
+        screen.blit(self.mro,self.mro_rct)
+
+
+
         # key_lst= {  # 押下キーと移動量の辞書
         # pg.K_j: (0, +1),
         # pg.K_LEFT: (-1, 0),
         # pg.K_RIGHT: (+1, 0),
         # }
-        screen.blit(self.mro, self.mro_rct)
         # j_u = 4
         # if self.key_ls[pg.K_j]: #jキーが押されたら
-        #     #self.mro.change_img(self.mro2, screen)
-        #     #self.mro2.move_ip((0, j_u)) #ジャンプするマリオ画像を上に4動かす
+        #     # self.mro.change_img(self.mro2, screen)
+        #     self.mro.move_ip((0, j_u)) #ジャンプするマリオ画像を上に4動かす
         #     self.mro_rct.move_ip(0, j_u)
+        
         # #self.mro.change_img(self.mro2, screen)
         # #self.mro2.move_ip((0, -j_u)) #ジャンプするマリオ画像を下に4動かす
         # self.mro_rct.move_ip(0, -j_u)
@@ -71,42 +136,10 @@ class mario():
         #     self.mro_rct.move_ip(+1, 0)
         #     screen.blit(self.mro, self.mro_rct)
 
-WIDTH = 1800  #1800 ゲームウィンドウの幅
-HEIGHT = 900  #900 ゲームウィンドウの高さ
-earth = HEIGHT*3//4 #地面の高さ
-square = 55 #ブロックの大きさ
-
 """
 HEAD
 """
-class Stage:
-    """
-    ステージ作成を行う
-    """
-    def __init__(self,x,y,speed):
-        """
-        ブロックの大きさ変更
-        引数x,yはブロックの初期位置を表す
-        """
-        self.image=pg.transform.rotozoom(pg.image.load("ex05/brock1.jpg"),0,0.08)
-        self.rect=self.image.get_rect()
-        self.rect.topleft=(square*x,earth+square*y)
-        self.speed=1
 
-        #ブロックの画像の大きさの確認用
-        # self.image_width, self.image_height = self.image.get_size()
-        # print(f"画像の幅: {self.image_width}, 画像の高さ: {self.image_height}")
-
-    
-    def update(self):
-        self.rect.x-=self.speed
-
-    def OffScreen(self):
-        return self.rect.right<=0
-            
-
-    def draw(self,screen):
-        screen.blit(self.image,self.rect.topleft)
         
 
 class Tekimod:
@@ -162,12 +195,17 @@ class Tekimod:
 敵mob
 """
 def check_collision(mob,stage):
-    hanntei=0
+    hanntei=[]
     if mob.colliderect(stage):
-        if mob.bottom>=stage.top and mob.top<=stage.bottom:
-            hanntei=1
-        if mob.left>=stage.right and mob.right>=stage.left:
-            hanntei=2
+        if mob.top<stage.top and mob.bottom>stage.top:
+            hanntei.append(1)
+        if mob.bottom > stage.bottom and mob.top < stage.bottom and mob.top>stage.center[1]:
+            hanntei.append(2)
+        if mob.topleft[0] < stage.right and mob.topright[0] > stage.right:
+            hanntei.append(3)
+        if mob.topright[0] > stage.left and mob.topleft[0] < stage.left:
+            hanntei.append(4)
+
     return hanntei
         #super().__init__()
     
@@ -176,39 +214,23 @@ def check_collision(mob,stage):
 def main():
     pg.display.set_caption("タイトル")
     screen = pg.display.set_mode((WIDTH,HEIGHT))
-    back = pg.image.load("ex05/haikei.png")
+    # back = pg.image.load("ex05/haikei.png")
     #back = pg.image.load("ex04/fig/pg_bg.jpg")
-    mrio = pg.sprite.Group()
-    mo = mario()
+    # mrio = pg.sprite.Group()
+    teki=Tekimod()
+    ma=mario()
     clock = pg.time.Clock()
-    key_ls= {  # 押下キーと移動量の辞書
-        pg.K_j: (0, -6), #
-        pg.K_LEFT: (-1, 0),
-        pg.K_RIGHT: (+1, 0),
-        }
-    while True:
-        for event in pg.event.get():
-            if event.type == pg.QUIT: 
-                return
 
-        screen.blit(mo.mro,(0,0))
-        key_lst = pg.key.get_pressed()
-        mro_mv = [0,1] #
-        for key, mv in key_ls.items():
-            if key_lst[key]:
-                mro_mv[0] += mv[0]
-                mro_mv[1] += mv[1]
-        mo.mro_rct.move_ip(mro_mv[0], mro_mv[1])
-        screen.blit(mo.mro, mo.mro_rct)
+        
 
         # mrio.update(screen)
         # mo.update(screen)
-        pg.display.update()
-        screen.blit(back,[0,0])
+        # pg.display.update()
+        # screen.blit(back,[0,0])
         # clock.tick(50)
 
-    screen = pg.display.set_mode((WIDTH,HEIGHT))
-    teki=Tekimod()
+    # screen = pg.display.set_mode((WIDTH,HEIGHT))
+
     """
     良輔
     """
@@ -390,7 +412,7 @@ def main():
         (110,-1),(110,-2),(110,-3),(110,-4),(110,-5),(110,-6),(110,-7),(110,-8)
     ]
 
-    speed=0
+    speed=1
     scrollers=[]
     for i in range(len(positions)):
         x,y=positions[i]
@@ -405,7 +427,9 @@ def main():
         for event in pg.event.get():
             if event.type==pg.KEYDOWN and event.key==pg.K_SPACE:
                 return
+        screen.fill((0,0,255))#背景仮
 
+        # screen.blit(mo.mro,(100,100))
         now_time=pg.time.get_ticks()
         
         # print(now_time) #時間確認用
@@ -422,13 +446,32 @@ def main():
 
         teki.bomu_y=+5
         teki.kuribo_y=+5
+
+        ma.on_ground=False
+        ma.on_head=False
+        ma.on_left=False
+        ma.on_right=False
         for i in range(len(scrollers)):
-            if check_collision(teki.bomu_rct,scrollers[i].rect)==1:
+            if 1 in check_collision(teki.bomu_rct,scrollers[i].rect):
                 teki.bomu_y=0
                 teki.bomu_x=-2
-            if check_collision(teki.kuribo_rct,scrollers[i].rect)==1:
+            if 1 in check_collision(teki.kuribo_rct,scrollers[i].rect):
                 teki.kuribo_y=0
                 teki.kuribo_x=-2
+            if 1 in check_collision(ma.mro_rct,scrollers[i].rect):
+                ma.on_ground=True
+            if 2 in check_collision(ma.mro_rct,scrollers[i].rect):
+                ma.on_head=True
+            if 3 in check_collision(ma.mro_rct,scrollers[i].rect):
+                ma.on_left=True
+            if 4 in check_collision(ma.mro_rct,scrollers[i].rect):
+                ma.on_right=True
+
+        key_lst = pg.key.get_pressed()
+        for key, mv in ma.key_ls.items():
+            if key_lst[key]:
+                ma.x += mv[0]
+        # print(mro_mv)
             # if check_collision(teki.bomu_rct,scrollers[i].rect)==2:
             #     teki.bomu_x*=-1
             #     teki.bomu_y=teki.bomu_y
@@ -437,9 +480,12 @@ def main():
             #     teki.kuribo_y=teki.kuribo_y
 
         #teki=Tekimod()
-        screen.fill((0,0,255))#背景仮
+        ma.move(speed)
+
         for scroller in scrollers:
             scroller.draw(screen)
+        
+        ma.update(screen)
         teki.update(screen)#敵mobを追加
         pg.display.flip()
         clock.tick(60)
