@@ -1,7 +1,6 @@
 import sys
 import time
 import pygame as pg
-import pygame
 from pygame.sprite import AbstractGroup
 
 
@@ -77,7 +76,7 @@ class mario():
         self.mro_rct = self.mro.get_rect()
 
 
-    def move(self,speed):
+    def move(self,speed,end):
         keys=pg.key.get_pressed()
         if self.on_ground==True:
             self.velocity=(-(self.gravity+3))
@@ -96,7 +95,8 @@ class mario():
 
         self.velocity+=self.gravity
         self.y+=self.velocity
-        self.velocity_x-=speed
+        if end == False:
+            self.velocity_x-=speed
         self.x+=self.velocity_x
         self.mro_rct.x=self.x
         self.mro_rct.y=self.y
@@ -122,11 +122,14 @@ class Goal_m(pg.sprite.Sprite):
             goal_img = pg.image.load("ex05/goal.png")
             goal2_img = pg.image.load("ex05/goal_txt.jpeg") #時間があったら
             self.goal_img = pg.transform.scale(goal_img, (250, 500)) #画像の大きさ
-            self.goal_rct = self.goal_img.get_rect
+            self.goal2_img= pg.transform.scale(goal2_img,(WIDTH//3,HEIGHT//3))
+            self.goal_rct = self.goal_img.get_rect()
+            self.goal_rct.x=WIDTH*3//4
+            self.goal_rct.y=earth-square*8-20
             # enn = pg.Surface((20, 20))
 
     def update(self,screen):        #キャラがゴールする
-            screen.blit(self.goal_img, [WIDTH*3//4, earth-square*8-20])
+            screen.blit(self.goal_img, self.goal_rct)
 
 
         # key_lst= {  # 押下キーと移動量の辞書
@@ -215,16 +218,23 @@ class Tekimod:
 """
 敵mob
 """
+def touch_enemy(screen):
+    font = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 80)
+    txt = font.render("GameOver", True, (255, 255, 255))
+    screen.blit(txt, [250, 250])
+    pg.display.update()
+    time.sleep(10)
+
 def check_collision(mob,stage):
     hanntei=[]
     if mob.colliderect(stage):
-        if mob.top<stage.top and mob.bottom>stage.top:
+        if mob.top<=stage.top and mob.bottom>=stage.top:
             hanntei.append(1)
-        if mob.bottom > stage.bottom and mob.top < stage.bottom and mob.top>stage.center[1]:
+        if mob.bottom >= stage.bottom and mob.top <= stage.bottom and mob.top>=stage.center[1]:
             hanntei.append(2)
-        if mob.topleft[0] < stage.right and mob.topright[0] > stage.right:
+        if mob.topleft[0] <= stage.right and mob.topright[0] >= stage.right:
             hanntei.append(3)
-        if mob.topright[0] > stage.left and mob.topleft[0] < stage.left:
+        if mob.topright[0] >= stage.left and mob.topleft[0] <= stage.left:
             hanntei.append(4)
 
     return hanntei
@@ -412,13 +422,12 @@ def main():
         (88,-1),
         (89,-1),
 
-
+        (94,-1),
 
 
         (97,-1),
         (98,-1),
         
-
 
 
         (103,-1),
@@ -432,6 +441,7 @@ def main():
     ]
 
     speed=1
+    end=False
     scrollers=[]
     for i in range(len(positions)):
         x,y=positions[i]
@@ -441,8 +451,8 @@ def main():
 
     start_time=pg.time.get_ticks()
 
-    pygame.mixer.music.load("ex05/mario.mp3") 
-    pygame.mixer.music.play()
+    pg.mixer.music.load("ex05/mario.mp3") 
+    pg.mixer.music.play()
 
     while True:
     # for i in range(1000):
@@ -489,11 +499,7 @@ def main():
                 ma.on_left=True
             if 4 in check_collision(ma.mro_rct,scrollers[i].rect):
                 ma.on_right=True
-            if len(check_collision(ma.mro_rct,goal.goal_rct))>=1:
-                print("goal")
-                pygame.mixer.music.load("ex05/Goal.mp3") 
-                pygame.mixer.music.play()
-                return
+            
 
         key_lst = pg.key.get_pressed()
         for key, mv in ma.key_ls.items():
@@ -508,17 +514,21 @@ def main():
             #     teki.kuribo_y=teki.kuribo_y
 
         #teki=Tekimod()
-        key_lst = pg.key.get_pressed()
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                return 0
+
     
 
 
 
         if goal is not None:
             goal.update(screen)
-
+            end=True
+            if len(check_collision(ma.mro_rct,goal.goal_rct))>=1:
+                screen.blit(goal.goal2_img,(WIDTH//3,HEIGHT//3))
+                pg.display.update()
+                pg.mixer.music.load("ex05/Goal.mp3") 
+                pg.mixer.music.play()
+                time.sleep(10)
+                return
 
         
 
@@ -529,10 +539,13 @@ def main():
         # clock.tick(50)
 
     # screen = pg.display.set_mode((WIDTH,HEIGHT))
-        ma.move(speed)
+        ma.move(speed,end)
 
         for scroller in scrollers:
             scroller.draw(screen)
+        if len(check_collision(ma.mro_rct,teki.bomu_rct)+check_collision(ma.mro_rct,teki.kira_rct)+check_collision(ma.mro_rct,teki.kuribo_rct)+check_collision(ma.mro_rct,teki.pakkun_rct))>=1 or ma.mro_rct.right<0 or ma.mro_rct.left>WIDTH or ma.mro_rct.top>HEIGHT:
+            touch_enemy(screen)
+            return
         
         ma.update(screen)
         teki.update(screen)#敵mobを追加
