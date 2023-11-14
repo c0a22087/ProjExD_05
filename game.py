@@ -245,7 +245,7 @@ def check_collision(mob,stage):
 
 
 def main():
-    pg.display.set_caption("タイトル")
+    pg.display.set_caption("スーパーマリオ")
 
     screen = pg.display.set_mode((WIDTH,HEIGHT))
     # back = pg.image.load("ex05/haikei.png")
